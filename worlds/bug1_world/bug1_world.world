@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+<sdf version="1.7">
+  <world name="bug1_world">
+
+    <!-- Luz do sol -->
+    <include>
+      <uri>model://sun</uri>
+    </include>
+
+    <!-- Incluindo o seu modelo -->
+    <include>
+      <uri>model://bug1_world</uri>
+    </include>
+
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+
+  </world>
+</sdf>

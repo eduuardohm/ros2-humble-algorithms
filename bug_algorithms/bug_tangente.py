@@ -6,9 +6,9 @@ from sensor_msgs.msg import LaserScan
 import numpy as np
 import math
 
-class Bug1(Node):
+class Bug_Tangente(Node):
     def __init__(self):
-        super().__init__('bug1')
+        super().__init__('bug_tangente')
 
         # Publishers & Subscribers
         self.cmd_vel_pub = self.create_publisher(Twist, '/cmd_vel', 10)
@@ -85,69 +85,80 @@ class Bug1(Node):
 
         twist = Twist()
 
-        # Distância ao alvo
+        # Distância e direção ao alvo
         dx = self.goal[0] - self.pose.position.x
         dy = self.goal[1] - self.pose.position.y
         dist_to_goal = math.sqrt(dx**2 + dy**2)
+        angle_to_goal = math.atan2(dy, dx)
+        yaw = self.get_yaw()
+        angle_error = self.normalize_angle(angle_to_goal - yaw)
 
-        self.get_logger().info(f"Current State: {self.state}, Distance to Goal: {dist_to_goal:.2f} m")
-
-        if dist_to_goal < 0.2:
-            self.get_logger().info("CHEGUEI NESTA PORRA!")
-            twist.linear.x = 0.0
-            twist.angular.z = 0.0
-            self.cmd_vel_pub.publish(twist)
-            return
-
-        # Obter setores do laser
-        front_sector = self.get_sector_ranges(-30, 30)  # ±20 graus na frente
-        left_sector = self.get_sector_ranges(30, 80)    # 30-80 graus à esquerda
-        right_sector = self.get_sector_ranges(-80, -30) # 30-80 graus à direita
+        # Obter setores
+        front_sector = self.get_sector_ranges(-30, 30)
+        left_sector = self.get_sector_ranges(30, 80)
+        right_sector = self.get_sector_ranges(-80, -30)
 
         min_front = min(front_sector) if front_sector else float('inf')
         min_left = min(left_sector) if left_sector else float('inf')
         min_right = min(right_sector) if right_sector else float('inf')
 
+        # --- ESTADOS ---
+        if dist_to_goal < 0.2:
+            self.get_logger().info("Goal reached!")
+            twist.linear.x = 0.0
+            twist.angular.z = 0.0
+            self.cmd_vel_pub.publish(twist)
+            return
+
         if self.state == "GOAL_SEEK":
-            if min_front < 1.2:  # Obstáculo muito próximo
+            if min_front < 1.0:  # Obstáculo bloqueando
                 self.state = "WALL_FOLLOW"
-                self.hit_point = (self.pose.position.x, self.pose.position.y)
-                self.wall_follow_direction = "left"
-                self.get_logger().info(f"Switching to WALL_FOLLOW, following {self.wall_follow_direction}")
+                self.get_logger().info("Obstacle ahead → switching to WALL_FOLLOW")
             else:
-                # Navegação normal para o goal
-                angle_to_goal = math.atan2(dy, dx)
-                yaw = self.get_yaw()
-                angle_error = self.normalize_angle(angle_to_goal - yaw)
-                
                 twist.linear.x = 0.25
                 twist.angular.z = 0.3 * angle_error
 
         elif self.state == "WALL_FOLLOW":
-            
-            if min_front > 1.2 and min_right > 0.8:
+            # --- NOVO: verifica se há linha de visão até o objetivo ---
+            if self.is_line_of_sight_clear(angle_to_goal, dist_to_goal):
                 self.state = "GOAL_SEEK"
-                self.get_logger().info("Returning to GOAL_SEEK")
+                self.get_logger().info("Line of sight to goal found → returning to GOAL_SEEK")
                 return
 
-            if min_front < 0.5:  # Obstáculo muito próximo à frente
-                twist.linear.x = -0.05  # Rézinha massa
-                twist.angular.z = 0.7  # Gira para a direita
-                self.get_logger().info("Obstacle ahead, turning right")
-            elif min_right < 0.3:  # Muito perto da parede
+            # Segue parede (similar ao Bug 1)
+            if min_front < 0.5:
+                twist.linear.x = -0.05
+                twist.angular.z = 0.7
+            elif min_left < 0.5:
                 twist.linear.x = 0.05
-                twist.angular.z = -1.0  # Afasta da parede
-                self.get_logger().info("Muito perto da parede lateral, afastando.")
-            elif min_right > 0.8:  # Muito longe da parede
+                twist.angular.z = -1.0
+            elif min_left > 0.8:
                 twist.linear.x = 0.05
-                twist.angular.z = 0.1  # Aproxima da parede
-                self.get_logger().info("Muito longe da parede lateral, aproximando.")
-            else:  # Distância adequada
+                twist.angular.z = 0.1
+            else:
                 twist.linear.x = 0.15
                 twist.angular.z = 0.0
-                self.get_logger().info("Muito longe da parede lateral, aproximando.")
 
         self.cmd_vel_pub.publish(twist)
+
+
+    def is_line_of_sight_clear(self, angle_to_goal, dist_to_goal):
+        """Verifica se há linha reta livre até o objetivo"""
+        if self.latest_scan_msg is None:
+            return False
+
+        goal_idx = self.angle_to_index(angle_to_goal)
+        max_idx = min(goal_idx + 5, len(self.ranges) - 1)
+        min_idx = max(goal_idx - 5, 0)
+
+        sector = self.ranges[min_idx:max_idx+1]
+        sector = [r for r in sector if not math.isinf(r) and not math.isnan(r)]
+
+        if not sector:
+            return True
+
+        # Se todas as leituras no setor são maiores que a distância até o goal, caminho está livre
+        return min(sector) > dist_to_goal
 
     def get_yaw(self):
         q = self.pose.orientation
@@ -165,7 +176,7 @@ class Bug1(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    node = Bug1()
+    node = Bug_Tangente()
     rclpy.spin(node)
     node.destroy_node()
     rclpy.shutdown()

@@ -28,6 +28,7 @@ setup(
     entry_points={
         'console_scripts': [
             'bug1 = bug_algorithms.bug1:main',
+            'bug_tangente = bug_algorithms.bug_tangente:main',
         ],
     },
 )

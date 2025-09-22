@@ -19,9 +19,16 @@ class Bug1(Node):
         self.state = "GOAL_SEEK"  # GOAL_SEEK ou WALL_FOLLOW
         self.pose = None
         self.ranges = []
+        self.start = (1.540100, -7.914520)     # Configurar com o mesmo start do launch
         self.goal = (0, 8.7)  # Alvo (x, y) no mapa
         self.hit_point = None
         self.latest_scan_msg = None
+        self.has_left_hit_point = False
+
+        # Variáveis do bug1
+        self.closest_point_to_goal = None
+        self.has_made_a_full_tour = False
+        self.min_dist_to_goal_while_following = float('inf')
 
         self.timer = self.create_timer(0.1, self.control_loop)
 
@@ -53,6 +60,13 @@ class Bug1(Node):
         
         # Filtra valores inválidos
         return [r for r in sector if not (math.isinf(r) or math.isnan(r)) and 0.0 < r < 3.5]
+
+    def distance_to_goal(self):
+        if self.pose is None or self.goal is None:
+            return float('inf')
+        dx = self.goal[0] - self.pose.position.x
+        dy = self.goal[1] - self.pose.position.y
+        return math.sqrt(dx**2 + dy**2)
 
     # === CALLBACKS ===
     def odom_callback(self, msg: Odometry):
@@ -92,7 +106,7 @@ class Bug1(Node):
 
         self.get_logger().info(f"Current State: {self.state}, Distance to Goal: {dist_to_goal:.2f} m")
 
-        if dist_to_goal < 0.2:
+        if dist_to_goal < 0.4:
             self.get_logger().info("CHEGUEI NESTA PORRA!")
             twist.linear.x = 0.0
             twist.angular.z = 0.0
@@ -109,43 +123,98 @@ class Bug1(Node):
         min_right = min(right_sector) if right_sector else float('inf')
 
         if self.state == "GOAL_SEEK":
-            if min_front < 1.2:  # Obstáculo muito próximo
+            if min_front < 0.7:  # Obstáculo muito próximo
+            # Caso esteja próximo de alguma parede
+
                 self.state = "WALL_FOLLOW"
                 self.hit_point = (self.pose.position.x, self.pose.position.y)
-                self.wall_follow_direction = "left"
-                self.get_logger().info(f"Switching to WALL_FOLLOW, following {self.wall_follow_direction}")
+                self.min_dist_to_goal_while_following = self.distance_to_goal()
+                self.closest_point_to_goal = self.hit_point
+                self.has_made_a_full_tour = False
+                self.has_left_hit_point = False
+                self.get_logger().info("Switching to WALL_FOLLOW")
             else:
                 # Navegação normal para o goal
                 angle_to_goal = math.atan2(dy, dx)
                 yaw = self.get_yaw()
                 angle_error = self.normalize_angle(angle_to_goal - yaw)
                 
-                twist.linear.x = 0.25
-                twist.angular.z = 0.3 * angle_error
+                twist.linear.x = 0.3
+                twist.angular.z = 0.5 * angle_error
 
         elif self.state == "WALL_FOLLOW":
-            
-            if min_front > 1.2 and min_right > 0.8:
-                self.state = "GOAL_SEEK"
-                self.get_logger().info("Returning to GOAL_SEEK")
-                return
 
-            if min_front < 0.5:  # Obstáculo muito próximo à frente
-                twist.linear.x = -0.05  # Rézinha massa
-                twist.angular.z = 0.7  # Gira para a direita
-                self.get_logger().info("Obstacle ahead, turning right")
-            elif min_right < 0.3:  # Muito perto da parede
-                twist.linear.x = 0.05
-                twist.angular.z = -1.0  # Afasta da parede
-                self.get_logger().info("Muito perto da parede lateral, afastando.")
-            elif min_right > 0.8:  # Muito longe da parede
-                twist.linear.x = 0.05
-                twist.angular.z = 0.1  # Aproxima da parede
-                self.get_logger().info("Muito longe da parede lateral, aproximando.")
-            else:  # Distância adequada
-                twist.linear.x = 0.15
-                twist.angular.z = 0.0
-                self.get_logger().info("Muito longe da parede lateral, aproximando.")
+            current_dist_to_goal = self.distance_to_goal()
+
+            if current_dist_to_goal < self.min_dist_to_goal_while_following:
+                self.min_dist_to_goal_while_following = current_dist_to_goal
+                self.closest_point_to_goal = (self.pose.position.x, self.pose.position.y)
+                self.get_logger().info(f"New closest point to goal: {self.closest_point_to_goal} with distance {self.min_dist_to_goal_while_following:.2f} m")
+
+            # Lógica de retorno ao hit_point
+            dist_to_hit_point = math.sqrt(
+                (self.pose.position.x - self.hit_point[0])**2 +
+                (self.pose.position.y - self.hit_point[1])**2
+            )
+
+            dist_to_closest_point = math.sqrt(
+                (self.pose.position.x - self.closest_point_to_goal[0])**2 +
+                (self.pose.position.y - self.closest_point_to_goal[1])**2
+            )
+
+            if not self.has_left_hit_point and dist_to_hit_point > 0.3: # Use uma distância pequena
+                self.has_left_hit_point = True
+                self.get_logger().info("Robô se afastou do ponto de impacto, pode iniciar a verificação de retorno.")
+
+            if self.has_left_hit_point and dist_to_hit_point < 0.2 and not self.has_made_a_full_tour:
+                # Robô retornou ao hit_point
+                self.get_logger().info("Voltando ao ponto de impacto.")
+                self.has_made_a_full_tour = True
+
+            if self.has_made_a_full_tour and dist_to_closest_point < 0.5:
+                self.state = "GOAL_SEEK"
+                self.get_logger().info("Chegou ao ponto mais próximo. Retornando para GOAL_SEEK.")
+                self.hit_point = None
+                self.closest_point_to_goal = None
+                self.has_left_hit_point = False
+                self.min_dist_to_goal_while_following = float('inf')
+                self.has_made_a_full_tour = False
+                return
+            
+            IDEAL_DISTANCE = 0.5 
+            SAFETY_DISTANCE = 0.8
+
+            # Ganho proporcional para o controle de velocidade angular
+            KP = 0.5 
+
+            # Verifica se há obstáculo à frente
+            if min_front < SAFETY_DISTANCE:
+                twist.linear.x = 0.0
+                twist.angular.z = 0.3  # Gira para esquerda
+                self.get_logger().info("Obstáculo à frente, girando para evitar.")
+            
+            #Se não houver obstáculo à frente, ajusta a distância da parede
+            elif min_right < 1.0:
+                # Calcule o erro: distância ideal - distância atual
+                distance_error = IDEAL_DISTANCE - min_right
+                
+                # Use o erro para ajustar a velocidade angular de forma proporcional
+                twist.linear.x = 0.3 # Velocidade de avanço
+                twist.angular.z = KP * distance_error # O sinal negativo garante que o robô gire na direção correta
+                self.get_logger().info("Ajustando distância da parede. Erro: {}".format(distance_error))
+
+            elif min_right > 1.0 and min_front > SAFETY_DISTANCE:
+                # A parede à direita "desapareceu"
+                # Reduza a velocidade linear e aumente a velocidade angular para virar
+                twist.linear.x = 0.0
+                twist.angular.z = -0.3 
+                self.get_logger().info("Curva! Perdemos a parede, virando para a direita.")
+
+            else:
+                # Não há parede detectada à direita. Gire para procurá-la.
+                twist.linear.x = 0.0
+                twist.angular.z = -0.3 
+                self.get_logger().info("Procurando parede à direita.")
 
         self.cmd_vel_pub.publish(twist)
 

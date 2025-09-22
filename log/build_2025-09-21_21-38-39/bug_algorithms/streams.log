@@ -1,0 +1,25 @@
+[0.613s] Invoking command in '/root/ros2_ws/src/bug_algorithms': PYTHONPATH=/root/ros2_ws/src/bug_algorithms/build/bug_algorithms/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base build/bug_algorithms build --build-base /root/ros2_ws/src/bug_algorithms/build/bug_algorithms/build install --record /root/ros2_ws/src/bug_algorithms/build/bug_algorithms/install.log --single-version-externally-managed install_data
+[0.834s] running egg_info
+[0.834s] writing build/bug_algorithms/bug_algorithms.egg-info/PKG-INFO
+[0.835s] writing dependency_links to build/bug_algorithms/bug_algorithms.egg-info/dependency_links.txt
+[0.835s] writing entry points to build/bug_algorithms/bug_algorithms.egg-info/entry_points.txt
+[0.835s] writing requirements to build/bug_algorithms/bug_algorithms.egg-info/requires.txt
+[0.835s] writing top-level names to build/bug_algorithms/bug_algorithms.egg-info/top_level.txt
+[0.837s] reading manifest file 'build/bug_algorithms/bug_algorithms.egg-info/SOURCES.txt'
+[0.838s] writing manifest file 'build/bug_algorithms/bug_algorithms.egg-info/SOURCES.txt'
+[0.838s] running build
+[0.838s] running build_py
+[0.838s] copying bug_algorithms/bug1.py -> /root/ros2_ws/src/bug_algorithms/build/bug_algorithms/build/lib/bug_algorithms
+[0.839s] running install
+[0.839s] running install_lib
+[0.840s] copying /root/ros2_ws/src/bug_algorithms/build/bug_algorithms/build/lib/bug_algorithms/bug1.py -> /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/python3.10/site-packages/bug_algorithms
+[0.840s] byte-compiling /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/python3.10/site-packages/bug_algorithms/bug1.py to bug1.cpython-310.pyc
+[0.842s] running install_data
+[0.842s] running install_egg_info
+[0.844s] removing '/root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/python3.10/site-packages/bug_algorithms-0.0.0-py3.10.egg-info' (and everything under it)
+[0.844s] Copying build/bug_algorithms/bug_algorithms.egg-info to /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/python3.10/site-packages/bug_algorithms-0.0.0-py3.10.egg-info
+[0.845s] running install_scripts
+[0.864s] Installing bug1 script to /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/bug_algorithms
+[0.864s] Installing bug_tangente script to /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/bug_algorithms
+[0.864s] writing list of installed files to '/root/ros2_ws/src/bug_algorithms/build/bug_algorithms/install.log'
+[0.896s] Invoked command in '/root/ros2_ws/src/bug_algorithms' returned '0': PYTHONPATH=/root/ros2_ws/src/bug_algorithms/build/bug_algorithms/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base build/bug_algorithms build --build-base /root/ros2_ws/src/bug_algorithms/build/bug_algorithms/build install --record /root/ros2_ws/src/bug_algorithms/build/bug_algorithms/install.log --single-version-externally-managed install_data

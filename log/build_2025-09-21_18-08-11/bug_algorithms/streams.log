@@ -1,0 +1,44 @@
+[0.573s] Invoking command in '/root/ros2_ws/src/bug_algorithms': PYTHONPATH=/root/ros2_ws/src/bug_algorithms/build/bug_algorithms/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base build/bug_algorithms build --build-base /root/ros2_ws/src/bug_algorithms/build/bug_algorithms/build install --record /root/ros2_ws/src/bug_algorithms/build/bug_algorithms/install.log --single-version-externally-managed install_data
+[0.790s] running egg_info
+[0.791s] creating build/bug_algorithms/bug_algorithms.egg-info
+[0.791s] writing build/bug_algorithms/bug_algorithms.egg-info/PKG-INFO
+[0.791s] writing dependency_links to build/bug_algorithms/bug_algorithms.egg-info/dependency_links.txt
+[0.792s] writing entry points to build/bug_algorithms/bug_algorithms.egg-info/entry_points.txt
+[0.792s] writing requirements to build/bug_algorithms/bug_algorithms.egg-info/requires.txt
+[0.792s] writing top-level names to build/bug_algorithms/bug_algorithms.egg-info/top_level.txt
+[0.792s] writing manifest file 'build/bug_algorithms/bug_algorithms.egg-info/SOURCES.txt'
+[0.794s] reading manifest file 'build/bug_algorithms/bug_algorithms.egg-info/SOURCES.txt'
+[0.795s] writing manifest file 'build/bug_algorithms/bug_algorithms.egg-info/SOURCES.txt'
+[0.795s] running build
+[0.795s] running build_py
+[0.795s] creating /root/ros2_ws/src/bug_algorithms/build/bug_algorithms/build
+[0.795s] creating /root/ros2_ws/src/bug_algorithms/build/bug_algorithms/build/lib
+[0.796s] creating /root/ros2_ws/src/bug_algorithms/build/bug_algorithms/build/lib/bug_algorithms
+[0.796s] copying bug_algorithms/bug1.py -> /root/ros2_ws/src/bug_algorithms/build/bug_algorithms/build/lib/bug_algorithms
+[0.796s] copying bug_algorithms/__init__.py -> /root/ros2_ws/src/bug_algorithms/build/bug_algorithms/build/lib/bug_algorithms
+[0.796s] copying bug_algorithms/bug_tangente.py -> /root/ros2_ws/src/bug_algorithms/build/bug_algorithms/build/lib/bug_algorithms
+[0.796s] running install
+[0.797s] running install_lib
+[0.798s] creating /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/python3.10/site-packages/bug_algorithms
+[0.798s] copying /root/ros2_ws/src/bug_algorithms/build/bug_algorithms/build/lib/bug_algorithms/bug1.py -> /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/python3.10/site-packages/bug_algorithms
+[0.798s] copying /root/ros2_ws/src/bug_algorithms/build/bug_algorithms/build/lib/bug_algorithms/__init__.py -> /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/python3.10/site-packages/bug_algorithms
+[0.798s] copying /root/ros2_ws/src/bug_algorithms/build/bug_algorithms/build/lib/bug_algorithms/bug_tangente.py -> /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/python3.10/site-packages/bug_algorithms
+[0.799s] byte-compiling /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/python3.10/site-packages/bug_algorithms/bug1.py to bug1.cpython-310.pyc
+[0.800s] byte-compiling /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/python3.10/site-packages/bug_algorithms/__init__.py to __init__.cpython-310.pyc
+[0.800s] byte-compiling /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/python3.10/site-packages/bug_algorithms/bug_tangente.py to bug_tangente.cpython-310.pyc
+[0.801s] running install_data
+[0.801s] creating /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/share/ament_index
+[0.802s] creating /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/share/ament_index/resource_index
+[0.802s] creating /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/share/ament_index/resource_index/packages
+[0.802s] copying resource/bug_algorithms -> /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/share/ament_index/resource_index/packages
+[0.802s] copying package.xml -> /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/share/bug_algorithms
+[0.802s] creating /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/share/bug_algorithms/launch
+[0.803s] copying launch/bug_tangente.launch.py -> /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/share/bug_algorithms/launch
+[0.803s] copying launch/bug_world.launch.py -> /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/share/bug_algorithms/launch
+[0.803s] running install_egg_info
+[0.804s] Copying build/bug_algorithms/bug_algorithms.egg-info to /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/python3.10/site-packages/bug_algorithms-0.0.0-py3.10.egg-info
+[0.805s] running install_scripts
+[0.824s] Installing bug1 script to /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/bug_algorithms
+[0.825s] Installing bug_tangente script to /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/bug_algorithms
+[0.825s] writing list of installed files to '/root/ros2_ws/src/bug_algorithms/build/bug_algorithms/install.log'
+[0.856s] Invoked command in '/root/ros2_ws/src/bug_algorithms' returned '0': PYTHONPATH=/root/ros2_ws/src/bug_algorithms/build/bug_algorithms/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base build/bug_algorithms build --build-base /root/ros2_ws/src/bug_algorithms/build/bug_algorithms/build install --record /root/ros2_ws/src/bug_algorithms/build/bug_algorithms/install.log --single-version-externally-managed install_data

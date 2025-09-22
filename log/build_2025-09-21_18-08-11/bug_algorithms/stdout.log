@@ -1,0 +1,42 @@
+running egg_info
+creating build/bug_algorithms/bug_algorithms.egg-info
+writing build/bug_algorithms/bug_algorithms.egg-info/PKG-INFO
+writing dependency_links to build/bug_algorithms/bug_algorithms.egg-info/dependency_links.txt
+writing entry points to build/bug_algorithms/bug_algorithms.egg-info/entry_points.txt
+writing requirements to build/bug_algorithms/bug_algorithms.egg-info/requires.txt
+writing top-level names to build/bug_algorithms/bug_algorithms.egg-info/top_level.txt
+writing manifest file 'build/bug_algorithms/bug_algorithms.egg-info/SOURCES.txt'
+reading manifest file 'build/bug_algorithms/bug_algorithms.egg-info/SOURCES.txt'
+writing manifest file 'build/bug_algorithms/bug_algorithms.egg-info/SOURCES.txt'
+running build
+running build_py
+creating /root/ros2_ws/src/bug_algorithms/build/bug_algorithms/build
+creating /root/ros2_ws/src/bug_algorithms/build/bug_algorithms/build/lib
+creating /root/ros2_ws/src/bug_algorithms/build/bug_algorithms/build/lib/bug_algorithms
+copying bug_algorithms/bug1.py -> /root/ros2_ws/src/bug_algorithms/build/bug_algorithms/build/lib/bug_algorithms
+copying bug_algorithms/__init__.py -> /root/ros2_ws/src/bug_algorithms/build/bug_algorithms/build/lib/bug_algorithms
+copying bug_algorithms/bug_tangente.py -> /root/ros2_ws/src/bug_algorithms/build/bug_algorithms/build/lib/bug_algorithms
+running install
+running install_lib
+creating /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/python3.10/site-packages/bug_algorithms
+copying /root/ros2_ws/src/bug_algorithms/build/bug_algorithms/build/lib/bug_algorithms/bug1.py -> /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/python3.10/site-packages/bug_algorithms
+copying /root/ros2_ws/src/bug_algorithms/build/bug_algorithms/build/lib/bug_algorithms/__init__.py -> /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/python3.10/site-packages/bug_algorithms
+copying /root/ros2_ws/src/bug_algorithms/build/bug_algorithms/build/lib/bug_algorithms/bug_tangente.py -> /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/python3.10/site-packages/bug_algorithms
+byte-compiling /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/python3.10/site-packages/bug_algorithms/bug1.py to bug1.cpython-310.pyc
+byte-compiling /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/python3.10/site-packages/bug_algorithms/__init__.py to __init__.cpython-310.pyc
+byte-compiling /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/python3.10/site-packages/bug_algorithms/bug_tangente.py to bug_tangente.cpython-310.pyc
+running install_data
+creating /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/share/ament_index
+creating /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/share/ament_index/resource_index
+creating /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/share/ament_index/resource_index/packages
+copying resource/bug_algorithms -> /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/share/ament_index/resource_index/packages
+copying package.xml -> /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/share/bug_algorithms
+creating /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/share/bug_algorithms/launch
+copying launch/bug_tangente.launch.py -> /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/share/bug_algorithms/launch
+copying launch/bug_world.launch.py -> /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/share/bug_algorithms/launch
+running install_egg_info
+Copying build/bug_algorithms/bug_algorithms.egg-info to /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/python3.10/site-packages/bug_algorithms-0.0.0-py3.10.egg-info
+running install_scripts
+Installing bug1 script to /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/bug_algorithms
+Installing bug_tangente script to /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/bug_algorithms
+writing list of installed files to '/root/ros2_ws/src/bug_algorithms/build/bug_algorithms/install.log'

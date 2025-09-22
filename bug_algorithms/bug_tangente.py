@@ -5,9 +5,10 @@ from nav_msgs.msg import Odometry
 from sensor_msgs.msg import LaserScan
 import numpy as np
 import math
+from std_msgs.msg import String
 from tf_transformations import euler_from_quaternion
 
-
+# Bug Tangente Implementaçao
 class Bug_Tangente(Node):
     def __init__(self):
         super().__init__('bug_tangente')
@@ -16,13 +17,14 @@ class Bug_Tangente(Node):
         self.cmd_vel_pub = self.create_publisher(Twist, '/cmd_vel', 10)
         self.odom_sub = self.create_subscription(Odometry, '/odom', self.odom_callback, 10)
         self.scan_sub = self.create_subscription(LaserScan, '/scan', self.scan_callback, 10)
+        self.state_pub = self.create_publisher(String, '/bug_state', 10)
 
         # Estado do robô
         self.state = "GOAL_SEEK"  # GOAL_SEEK ou WALL_FOLLOW
         self.pose = None
         self.ranges = []
-        self.start = (1.540100, -7.914520)     # Configurar com o mesmo start do launch
-        self.goal = (0, 8.7)  # Alvo (x, y) no mapa
+        self.start = (1.5, -7.0)
+        self.goal = (0, 8.7)         # Alvo (x, y) no mapa
         self.latest_scan_msg = None
 
         # Variáveis do bug tangente
@@ -30,6 +32,11 @@ class Bug_Tangente(Node):
         self.min_dist_to_goal_while_following = float('inf')
 
         self.timer = self.create_timer(0.1, self.control_loop)
+
+    def publish_state(self):
+        msg = String()
+        msg.data = self.state
+        self.state_pub.publish(msg)
 
     def angle_to_index(self, angle_rad):
         if self.latest_scan_msg is None:
@@ -109,7 +116,9 @@ class Bug_Tangente(Node):
         self.get_logger().info(f"Current State: {self.state}, Distance to Goal: {dist_to_goal:.2f} m")
 
         if dist_to_goal < 0.4:
-            self.get_logger().info("CHEGUEI NESTA PORRA!")
+            self.get_logger().info("CHEGUEI NO GOAL!")
+            self.state = "REACHED_GOAL"
+            self.publish_state()
             twist.linear.x = 0.0
             twist.angular.z = 0.0
             self.cmd_vel_pub.publish(twist)
@@ -125,29 +134,19 @@ class Bug_Tangente(Node):
         min_right = min(right_sector) if right_sector else float('inf')
 
         if self.state == "GOAL_SEEK":
-
-            discs = self.detect_discontinuities()
-            candidates = [(self.goal[0], self.goal[1])] + discs
-
-            best_point = min(candidates, key=lambda n:
-                math.dist((self.pose.position.x, self.pose.position.y), n) +
-                math.dist(n, self.goal))
-
-            if best_point == (self.goal[0], self.goal[1]) and min_front >= 0.7:
-                # Caminho livre até o goal
+            if min_front < 0.7:  # Obstáculo muito próximo
+            # Caso esteja próximo de alguma parede
+                self.state = "WALL_FOLLOW"
+                self.publish_state()
+                self.get_logger().info("Switching to WALL_FOLLOW")
+            else:
+                # Navegação normal para o goal
                 angle_to_goal = math.atan2(dy, dx)
                 yaw = self.get_yaw()
                 angle_error = self.normalize_angle(angle_to_goal - yaw)
                 
                 twist.linear.x = 0.3
                 twist.angular.z = 0.5 * angle_error
-            else:
-                # Subgoal é um Oi -> troca para WALL_FOLLOW
-                self.state = "WALL_FOLLOW"
-                self.subgoal = best_point
-                self.d_followed = self.distance_to_goal()
-                self.d_reach = float('inf')
-                self.get_logger().info(f"Switching to WALL_FOLLOW, subgoal={best_point}")
 
         elif self.state == "WALL_FOLLOW":
 
@@ -159,15 +158,10 @@ class Bug_Tangente(Node):
             # Ganho proporcional para o controle de velocidade angular
             KP = 0.5 
 
-            self.d_followed = min(self.d_followed, self.distance_to_goal())
-
-            discs = self.detect_discontinuities()
-            if discs:
-                self.d_reach = min(math.dist(self.goal, d) for d in discs)
-
-            if self.d_reach + 0.2 < self.d_followed:
+            if self.is_path_to_goal_clear():
                 self.state = "GOAL_SEEK"
-                self.get_logger().info("Critério Tangent Bug satisfeito, voltando para GOAL_SEEK.")
+                self.publish_state()
+                self.get_logger().info("Caminho para o objetivo está livre. Voltando para GOAL_SEEK.")
                 return
 
             # Verifica se há obstáculo à frente
@@ -178,17 +172,14 @@ class Bug_Tangente(Node):
             
             #Se não houver obstáculo à frente, ajusta a distância da parede
             elif min_right < 1.0:
-                # Calcule o erro: distância ideal - distância atual
                 distance_error = IDEAL_DISTANCE - min_right
                 
-                # Use o erro para ajustar a velocidade angular de forma proporcional
                 twist.linear.x = 0.3 # Velocidade de avanço
                 twist.angular.z = KP * distance_error # O sinal negativo garante que o robô gire na direção correta
                 self.get_logger().info("Ajustando distância da parede. Erro: {}".format(distance_error))
 
+            # Se a parede sumir, gira para encontrá-la
             elif min_right > 1.0 and min_front > SAFETY_DISTANCE:
-                # A parede à direita "desapareceu"
-                # Reduza a velocidade linear e aumente a velocidade angular para virar
                 twist.linear.x = 0.0
                 twist.angular.z = -0.3 
                 self.get_logger().info("Curva! Perdemos a parede, virando para a direita.")
@@ -226,28 +217,6 @@ class Bug_Tangente(Node):
         # O caminho está livre se o obstáculo mais próximo no setor
         # do objetivo for mais distante que a distância atual até o objetivo.
         return min_dist_in_sector > self.distance_to_goal()
-
-    def detect_discontinuities(self, threshold=0.5):
-        """Detecta pontos de descontinuidade no LaserScan."""
-        if not self.latest_scan_msg:
-            return []
-
-        discontinuities = []
-        ranges = np.array(self.ranges)
-        angle_min = self.latest_scan_msg.angle_min
-        angle_increment = self.latest_scan_msg.angle_increment
-
-        for i in range(1, len(ranges)):
-            if (math.isinf(ranges[i-1]) or math.isnan(ranges[i-1]) or
-                math.isinf(ranges[i]) or math.isnan(ranges[i])):
-                continue
-            if abs(ranges[i] - ranges[i-1]) > threshold:
-                angle = angle_min + i * angle_increment
-                x = self.pose.position.x + ranges[i] * math.cos(angle + self.yaw)
-                y = self.pose.position.y + ranges[i] * math.sin(angle + self.yaw)
-                discontinuities.append((x, y))
-
-        return discontinuities
 
     def get_yaw(self):
         q = self.pose.orientation

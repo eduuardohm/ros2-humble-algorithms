@@ -3,6 +3,7 @@ from rclpy.node import Node
 from geometry_msgs.msg import Twist, TwistStamped
 from nav_msgs.msg import Odometry
 from sensor_msgs.msg import LaserScan
+from std_msgs.msg import String
 import numpy as np
 import math
 
@@ -10,21 +11,19 @@ class Bug1(Node):
     def __init__(self):
         super().__init__('bug1')
 
-        # Publishers & Subscribers
         self.cmd_vel_pub = self.create_publisher(Twist, '/cmd_vel', 10)
         self.odom_sub = self.create_subscription(Odometry, '/odom', self.odom_callback, 10)
         self.scan_sub = self.create_subscription(LaserScan, '/scan', self.scan_callback, 10)
+        self.state_pub = self.create_publisher(String, '/bug_state', 10)
 
-        # Estado do robô
-        self.state = "GOAL_SEEK"  # GOAL_SEEK ou WALL_FOLLOW
+        self.state = "GOAL_SEEK"  # GOAL_SEEK, WALL_FOLLOW ou REACHED_GOAL
         self.pose = None
         self.ranges = []
-        self.start = (1.540100, -7.914520)     # Configurar com o mesmo start do launch
+        self.start = (1.5, -7.0)     # Configurar com o mesmo start do launch
         self.goal = (0, 8.7)  # Alvo (x, y) no mapa
         self.hit_point = None
         self.latest_scan_msg = None
         self.has_left_hit_point = False
-        self.has_reached_goal = False
 
         # Variáveis do bug1
         self.closest_point_to_goal = None
@@ -32,6 +31,11 @@ class Bug1(Node):
         self.min_dist_to_goal_while_following = float('inf')
 
         self.timer = self.create_timer(0.1, self.control_loop)
+
+    def publish_state(self):
+        msg = String()
+        msg.data = self.state
+        self.state_pub.publish(msg)
 
     def angle_to_index(self, angle_rad):
         if self.latest_scan_msg is None:
@@ -109,7 +113,8 @@ class Bug1(Node):
 
         if dist_to_goal < 0.4:
             self.get_logger().info("CHEGUEI NO GOAL!")
-            self.has_reached_goal = True
+            self.state = "REACHED_GOAL"
+            self.publish_state()
             twist.linear.x = 0.0
             twist.angular.z = 0.0
             self.cmd_vel_pub.publish(twist)
@@ -124,11 +129,12 @@ class Bug1(Node):
         min_left = min(left_sector) if left_sector else float('inf')
         min_right = min(right_sector) if right_sector else float('inf')
 
-        if self.state == "GOAL_SEEK" and not self.has_reached_goal:
+        if self.state == "GOAL_SEEK":
             if min_front < 0.7:  # Obstáculo muito próximo
             # Caso esteja próximo de alguma parede
 
                 self.state = "WALL_FOLLOW"
+                self.publish_state()
                 self.hit_point = (self.pose.position.x, self.pose.position.y)
                 self.min_dist_to_goal_while_following = self.distance_to_goal()
                 self.closest_point_to_goal = self.hit_point
@@ -144,7 +150,7 @@ class Bug1(Node):
                 twist.linear.x = 0.3
                 twist.angular.z = 0.5 * angle_error
 
-        elif self.state == "WALL_FOLLOW" and not self.has_reached_goal:
+        elif self.state == "WALL_FOLLOW":
 
             current_dist_to_goal = self.distance_to_goal()
 
@@ -164,17 +170,18 @@ class Bug1(Node):
                 (self.pose.position.y - self.closest_point_to_goal[1])**2
             )
 
-            if not self.has_left_hit_point and dist_to_hit_point > 0.3: # Use uma distância pequena
+            if not self.has_left_hit_point and dist_to_hit_point > 0.4: # Use uma distância pequena
                 self.has_left_hit_point = True
                 self.get_logger().info("Robô se afastou do ponto de impacto, pode iniciar a verificação de retorno.")
 
-            if self.has_left_hit_point and dist_to_hit_point < 0.2 and not self.has_made_a_full_tour:
+            if self.has_left_hit_point and dist_to_hit_point < 0.3 and not self.has_made_a_full_tour:
                 # Robô retornou ao hit_point
                 self.get_logger().info("Voltando ao ponto de impacto.")
                 self.has_made_a_full_tour = True
 
             if self.has_made_a_full_tour and dist_to_closest_point < 0.5:
                 self.state = "GOAL_SEEK"
+                self.publish_state()
                 self.get_logger().info("Chegou ao ponto mais próximo. Retornando para GOAL_SEEK.")
                 self.hit_point = None
                 self.closest_point_to_goal = None

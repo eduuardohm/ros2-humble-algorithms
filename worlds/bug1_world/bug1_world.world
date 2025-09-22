@@ -16,5 +16,50 @@
       <uri>model://ground_plane</uri>
     </include>
 
+    <!-- Luz em forma de círculo (~0.3 m de raio no chão) -->
+    <light name="circle_light" type="spot">
+      <!-- pose: x y z roll pitch yaw -->
+      <pose>0.0 8.7 2.0 0 0 0</pose>
+      <diffuse>1 1 1 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <cast_shadows>false</cast_shadows>
+      <attenuation>
+        <range>3</range>
+        <constant>0.5</constant>
+        <linear>0.1</linear>
+        <quadratic>0.01</quadratic>
+      </attenuation>
+      <!-- Apontando para baixo -->
+      <direction>0 0 -1</direction>
+      <spot>
+        <!-- Para raio ~0.3m a 1m de altura: outer ≈ 2*atan(0.3/1) ≈ 0.582 -->
+        <inner_angle>0.4</inner_angle>
+        <outer_angle>0.582</outer_angle>
+        <falloff>0.8</falloff>
+      </spot>
+    </light>
+
+    <light name="circle_light_2" type="spot">
+      <!-- pose: x y z roll pitch yaw -->
+      <pose>1.54 -7.0 2.0 0 0 0</pose>
+      <diffuse>1 1 1 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <cast_shadows>false</cast_shadows>
+      <attenuation>
+        <range>3</range>
+        <constant>0.5</constant>
+        <linear>0.1</linear>
+        <quadratic>0.01</quadratic>
+      </attenuation>
+      <!-- Apontando para baixo -->
+      <direction>0 0 -1</direction>
+      <spot>
+        <!-- Para raio ~0.3m a 1m de altura: outer ≈ 2*atan(0.3/1) ≈ 0.582 -->
+        <inner_angle>0.4</inner_angle>
+        <outer_angle>0.582</outer_angle>
+        <falloff>0.8</falloff>
+      </spot>
+    </light>
+
   </world>
 </sdf>

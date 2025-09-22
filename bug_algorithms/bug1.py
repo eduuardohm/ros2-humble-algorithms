@@ -24,6 +24,7 @@ class Bug1(Node):
         self.hit_point = None
         self.latest_scan_msg = None
         self.has_left_hit_point = False
+        self.has_reached_goal = False
 
         # Variáveis do bug1
         self.closest_point_to_goal = None
@@ -107,7 +108,8 @@ class Bug1(Node):
         self.get_logger().info(f"Current State: {self.state}, Distance to Goal: {dist_to_goal:.2f} m")
 
         if dist_to_goal < 0.4:
-            self.get_logger().info("CHEGUEI NESTA PORRA!")
+            self.get_logger().info("CHEGUEI NO GOAL!")
+            self.has_reached_goal = True
             twist.linear.x = 0.0
             twist.angular.z = 0.0
             self.cmd_vel_pub.publish(twist)
@@ -122,7 +124,7 @@ class Bug1(Node):
         min_left = min(left_sector) if left_sector else float('inf')
         min_right = min(right_sector) if right_sector else float('inf')
 
-        if self.state == "GOAL_SEEK":
+        if self.state == "GOAL_SEEK" and not self.has_reached_goal:
             if min_front < 0.7:  # Obstáculo muito próximo
             # Caso esteja próximo de alguma parede
 
@@ -142,7 +144,7 @@ class Bug1(Node):
                 twist.linear.x = 0.3
                 twist.angular.z = 0.5 * angle_error
 
-        elif self.state == "WALL_FOLLOW":
+        elif self.state == "WALL_FOLLOW" and not self.has_reached_goal:
 
             current_dist_to_goal = self.distance_to_goal()
 
@@ -199,11 +201,11 @@ class Bug1(Node):
                 distance_error = IDEAL_DISTANCE - min_right
                 
                 # Use o erro para ajustar a velocidade angular de forma proporcional
-                twist.linear.x = 0.3 # Velocidade de avanço
+                twist.linear.x = 0.25 # Velocidade de avanço
                 twist.angular.z = KP * distance_error # O sinal negativo garante que o robô gire na direção correta
                 self.get_logger().info("Ajustando distância da parede. Erro: {}".format(distance_error))
 
-            elif min_right > 1.0 and min_front > SAFETY_DISTANCE:
+            elif min_right > 1.2 and min_front > SAFETY_DISTANCE:
                 # A parede à direita "desapareceu"
                 # Reduza a velocidade linear e aumente a velocidade angular para virar
                 twist.linear.x = 0.0

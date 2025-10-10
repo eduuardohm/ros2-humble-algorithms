@@ -13,6 +13,7 @@ setup(
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
         (os.path.join('share', package_name, 'launch'), glob('launch/*.launch.py')),
+
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -27,8 +28,10 @@ setup(
     },
     entry_points={
         'console_scripts': [
+            'bug_zero = bug_algorithms.bug_zero:main',
             'bug1 = bug_algorithms.bug1:main',
             'bug_tangente = bug_algorithms.bug_tangente:main',
+            'potential_fields = bug_algorithms.potential_fields:main',
         ],
     },
 )

@@ -45,23 +45,25 @@ def generate_launch_description():
                 arguments=[
                     '-entity', 'wafflebot',
                     '-file', turtlebot3_model_path,
-                    '-x', '1.5',
+                    '-x', '1.50',
+                    # '-y', '-8.0',
                     '-y', '-7.0',
                     '-z', '0.5'
+                    # ,'-Y', '1.57'
                 ],
                 output='screen'
             )
         ]
     )
 
-    bug1_node = Node(
+    bug_zero_node = Node(
         package='bug_algorithms',
-        executable='bug1',   # tem que estar no setup.py ou CMakeLists como entry_point
+        executable='bug_zero',   # tem que estar no setup.py ou CMakeLists como entry_point
         output='screen'
     )
 
     return LaunchDescription([
         gazebo,
         spawn_turtlebot,
-        bug1_node
+        bug_zero_node
     ])

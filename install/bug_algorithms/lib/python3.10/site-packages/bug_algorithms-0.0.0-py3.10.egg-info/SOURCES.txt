@@ -4,6 +4,8 @@ setup.py
 bug_algorithms/__init__.py
 bug_algorithms/bug1.py
 bug_algorithms/bug_tangente.py
+bug_algorithms/bug_zero.py
+bug_algorithms/potential_fields.py
 build/bug_algorithms/bug_algorithms.egg-info/PKG-INFO
 build/bug_algorithms/bug_algorithms.egg-info/SOURCES.txt
 build/bug_algorithms/bug_algorithms.egg-info/dependency_links.txt
@@ -13,6 +15,8 @@ build/bug_algorithms/bug_algorithms.egg-info/top_level.txt
 build/bug_algorithms/bug_algorithms.egg-info/zip-safe
 launch/bug_tangente.launch.py
 launch/bug_world.launch.py
+launch/bug_zero_world.launch.py
+launch/potential_fields.launch.py
 resource/bug_algorithms
 test/test_copyright.py
 test/test_flake8.py

@@ -6,7 +6,8 @@ import os
 
 def generate_launch_description():
     # Caminho para o mundo
-    world_file = '/root/ros2_ws/src/bug_algorithms/worlds/bug1_world/bug1_world.world'
+    # world_file = '/root/ros2_ws/src/bug_algorithms/worlds/bug1_world/bug1_world.world'
+    world_file = '/root/ros2_ws/src/bug_algorithms/worlds/interlagos_world/generated_interlagos.world'
 
     # Configura o GAZEBO_MODEL_PATH incluindo seus modelos e TurtleBot3
     os.environ["GAZEBO_MODEL_PATH"] = "/root/ros2_ws/src/bug_algorithms/worlds:/opt/ros/humble/share/turtlebot3_gazebo/models"
@@ -45,11 +46,11 @@ def generate_launch_description():
                 arguments=[
                     '-entity', 'wafflebot',
                     '-file', turtlebot3_model_path,
-                    '-x', '1.50',
+                    '-x', '3.0',
                     # '-y', '-8.0',
-                    '-y', '-7.0',
-                    '-z', '0.5'
-                    # ,'-Y', '1.57'
+                    '-y', '-3.0',
+                    '-z', '0.05'
+                    ,'-Y', '1.57'
                 ],
                 output='screen'
             )

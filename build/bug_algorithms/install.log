@@ -1,13 +1,19 @@
 /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/python3.10/site-packages/bug_algorithms/bug1.py
 /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/python3.10/site-packages/bug_algorithms/__init__.py
+/root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/python3.10/site-packages/bug_algorithms/bug_zero.py
 /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/python3.10/site-packages/bug_algorithms/bug_tangente.py
+/root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/python3.10/site-packages/bug_algorithms/potential_fields.py
 /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/python3.10/site-packages/bug_algorithms/__pycache__/bug1.cpython-310.pyc
 /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/python3.10/site-packages/bug_algorithms/__pycache__/__init__.cpython-310.pyc
+/root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/python3.10/site-packages/bug_algorithms/__pycache__/bug_zero.cpython-310.pyc
 /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/python3.10/site-packages/bug_algorithms/__pycache__/bug_tangente.cpython-310.pyc
+/root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/python3.10/site-packages/bug_algorithms/__pycache__/potential_fields.cpython-310.pyc
 /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/share/ament_index/resource_index/packages/bug_algorithms
 /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/share/bug_algorithms/package.xml
 /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/share/bug_algorithms/launch/bug_tangente.launch.py
 /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/share/bug_algorithms/launch/bug_world.launch.py
+/root/ros2_ws/src/bug_algorithms/install/bug_algorithms/share/bug_algorithms/launch/bug_zero_world.launch.py
+/root/ros2_ws/src/bug_algorithms/install/bug_algorithms/share/bug_algorithms/launch/potential_fields.launch.py
 /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/python3.10/site-packages/bug_algorithms-0.0.0-py3.10.egg-info/requires.txt
 /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/python3.10/site-packages/bug_algorithms-0.0.0-py3.10.egg-info/zip-safe
 /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/python3.10/site-packages/bug_algorithms-0.0.0-py3.10.egg-info/dependency_links.txt
@@ -17,3 +23,5 @@
 /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/python3.10/site-packages/bug_algorithms-0.0.0-py3.10.egg-info/PKG-INFO
 /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/bug_algorithms/bug1
 /root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/bug_algorithms/bug_tangente
+/root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/bug_algorithms/bug_zero
+/root/ros2_ws/src/bug_algorithms/install/bug_algorithms/lib/bug_algorithms/potential_fields

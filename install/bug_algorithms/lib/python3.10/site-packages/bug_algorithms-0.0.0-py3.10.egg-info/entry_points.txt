@@ -1,4 +1,6 @@
 [console_scripts]
 bug1 = bug_algorithms.bug1:main
 bug_tangente = bug_algorithms.bug_tangente:main
+bug_zero = bug_algorithms.bug_zero:main
+potential_fields = bug_algorithms.potential_fields:main
 

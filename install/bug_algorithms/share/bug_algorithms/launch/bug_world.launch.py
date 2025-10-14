@@ -45,7 +45,7 @@ def generate_launch_description():
                 arguments=[
                     '-entity', 'wafflebot',
                     '-file', turtlebot3_model_path,
-                    '-x', '1.540100',
+                    '-x', '1.5',
                     '-y', '-7.0',
                     '-z', '0.5'
                 ],

@@ -45,8 +45,8 @@ def generate_launch_description():
                 arguments=[
                     '-entity', 'wafflebot',
                     '-file', turtlebot3_model_path,
-                    '-x', '1.540100',
-                    '-y', '-7.914520',
+                    '-x', '1.5',
+                    '-y', '-7.0',
                     '-z', '0.5'
                 ],
                 output='screen'
@@ -54,14 +54,15 @@ def generate_launch_description():
         ]
     )
 
-    bug1_node = Node(
+    bug_tangente_node = Node(
         package='bug_algorithms',
         executable='bug_tangente',   # tem que estar no setup.py ou CMakeLists como entry_point
+        name='bug_tangente',
         output='screen'
     )
 
     return LaunchDescription([
         gazebo,
         spawn_turtlebot,
-        bug1_node
+        bug_tangente_node
     ])

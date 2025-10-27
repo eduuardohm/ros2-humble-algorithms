@@ -50,7 +50,7 @@ def generate_launch_description():
                     # '-y', '-8.0',
                     '-y', '-3.0',
                     '-z', '0.05'
-                    ,'-Y', '1.57'
+                    # ,'-Y', '1.57'
                 ],
                 output='screen'
             )
@@ -59,7 +59,7 @@ def generate_launch_description():
 
     bug_zero_node = Node(
         package='bug_algorithms',
-        executable='bug_zero',   # tem que estar no setup.py ou CMakeLists como entry_point
+        executable='follow_route_node',   # tem que estar no setup.py ou CMakeLists como entry_point
         output='screen'
     )
 

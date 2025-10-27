@@ -32,6 +32,7 @@ setup(
             'bug1 = bug_algorithms.bug1:main',
             'bug_tangente = bug_algorithms.bug_tangente:main',
             'potential_fields = bug_algorithms.potential_fields:main',
+            'follow_route_node = bug_algorithms.follow_route_node:main'
         ],
     },
 )
